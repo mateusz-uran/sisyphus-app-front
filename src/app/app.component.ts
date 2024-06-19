@@ -26,16 +26,11 @@ import { UploadFileComponent } from './upload-file/upload-file.component';
         <img src="./sisyphus.svg" alt="" />
       </div>
       <div class="add-btn">
-        <button
-          mat-stroked-button
-          (click)="showUploadFileComponent(showUploadForm)"
-        >
-          Dodaj grupe
-        </button>
+        <button mat-stroked-button>Dodaj grupe</button>
       </div>
     </header>
-    <div *ngIf="!showUploadForm">
-      <app-upload-file (onFileUpload)="onUploadComplete()"></app-upload-file>
+    <div class="upload-wrapper">
+      <app-upload-file></app-upload-file>
     </div>
     <app-work-group
       *ngFor="let workGroup of transformedGroupList"
@@ -49,8 +44,6 @@ export class AppComponent {
   transformedGroupList: TransformedWorkGroup[] = [];
   workGroupService: WorkGroupService = inject(WorkGroupService);
 
-  showUploadForm: boolean = false;
-
   ngOnInit(): void {
     this.workGroupService.workGroups$.subscribe(
       (groupList: TransformedWorkGroup[]) => {
@@ -59,13 +52,5 @@ export class AppComponent {
     );
 
     this.workGroupService.loadInitialWorkGroups();
-  }
-
-  showUploadFileComponent(state: boolean): boolean {
-    return (this.showUploadForm = !state);
-  }
-
-  onUploadComplete(): void {
-    this.workGroupService.getWorkGroups();
   }
 }
