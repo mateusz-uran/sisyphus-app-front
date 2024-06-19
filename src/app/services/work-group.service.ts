@@ -2,13 +2,12 @@ import {
   HttpClient,
   HttpEvent,
   HttpRequest,
-  HttpEventType,
   HttpResponse,
-  HttpProgressEvent,
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, Subject, throwError } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
 import { TransformedWorkGroup, WorkGroup } from '../interfaces/work-group';
 
 @Injectable({
@@ -20,11 +19,9 @@ export class WorkGroupService {
   private workGroupsSubject = new BehaviorSubject<TransformedWorkGroup[]>([]);
   workGroups$ = this.workGroupsSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    this.loadInitialWorkGroups();
-  }
+  constructor(private http: HttpClient) {}
 
-  private loadInitialWorkGroups() {
+  loadInitialWorkGroups(): void {
     this.getWorkGroups().subscribe();
   }
 
@@ -36,9 +33,13 @@ export class WorkGroupService {
           cvData: this.decodeToPdf(workGroup.cvData),
         }))
       ),
-      tap((groupList: TransformedWorkGroup[]) =>
-        this.workGroupsSubject.next(groupList)
-      )
+      tap((groupList: TransformedWorkGroup[]) => {
+        this.workGroupsSubject.next(groupList);
+      }),
+      catchError((err) => {
+        console.log(err);
+        return EMPTY;
+      })
     );
   }
 

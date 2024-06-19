@@ -57,6 +57,8 @@ export class AppComponent {
         this.transformedGroupList = groupList;
       }
     );
+
+    this.workGroupService.loadInitialWorkGroups();
   }
 
   showUploadFileComponent(state: boolean): boolean {
