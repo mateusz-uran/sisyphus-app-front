@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-upload-file',
@@ -68,19 +69,33 @@ export class UploadFileComponent {
 
   workGroupService: WorkGroupService = inject(WorkGroupService);
   currentFile?: File | null;
-  message = '';
-
+  MIME_type_accepted = 'application/pdf';
   isUploading: boolean = false;
 
+  constructor(private _snackBar: MatSnackBar) {}
+
+  checkFileMimeType(file: File): boolean {
+    if (this.MIME_type_accepted !== file.type) {
+      this.handleSnackBar('Wrong file type', 'Ok');
+      return false;
+    }
+    return true;
+  }
+
   onFileDropped(file: File) {
-    this.currentFile = file;
+    if (this.checkFileMimeType(file)) {
+      this.currentFile = file;
+    }
   }
 
   fileBrowseHandler(event: Event) {
     const inputElement = event.target as HTMLInputElement;
+
     if (inputElement.files && inputElement.files.length > 0) {
       const file = inputElement.files[0];
-      this.currentFile = file;
+      if (this.checkFileMimeType(file)) {
+        this.currentFile = file;
+      }
     }
   }
 
@@ -94,15 +109,15 @@ export class UploadFileComponent {
       this.workGroupService.addWorkGroup(this.currentFile).subscribe({
         next: (event: any) => {
           if (event instanceof HttpResponse) {
-            this.message = 'File uploaded successfuly!';
             this.isUploading = false;
+            this.handleSnackBar('File uploaded successfuly!', 'Ok');
           }
         },
         error: (err: any) => {
           console.log('Error: ', err);
-          this.message = 'Could not upload the file!';
           this.currentFile = undefined;
           this.isUploading = false;
+          this.handleSnackBar('Could not upload the file!', 'Ok');
         },
         complete: () => {
           this.currentFile = undefined;
@@ -111,5 +126,9 @@ export class UploadFileComponent {
         },
       });
     }
+  }
+
+  handleSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
   }
 }

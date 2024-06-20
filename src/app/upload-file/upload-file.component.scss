@@ -9,13 +9,13 @@
   width: 450px;
   padding: 2rem;
   text-align: center;
-  border: dashed 2px $bg-blue;
+  border: dashed 2px $bg-gray;
   background: $bg-light;
   margin: 0 auto;
   border-radius: 5px;
 
   &.fileOver {
-    border-color: red;
+    border-color: $bg-blue;
     opacity: 0.5;
   }
 
@@ -35,7 +35,9 @@
       margin: 0;
       width: 100%;
       max-width: 300px;
-      border: 2px solid red;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       text-align: left;
     }
   }
