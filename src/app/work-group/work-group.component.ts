@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { WorkGroupService } from '../services/work-group.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-work-group',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule],
   template: `<section>
     <div class="link-wrapper">
       <img src="./vector_cv_resized.png" alt="cv_template" />
@@ -35,7 +36,9 @@ import { WorkGroupService } from '../services/work-group.service';
       </div>
     </article>
     <div class="btn-wrapper">
-      <button mat-raised-button>Przegladaj</button>
+      <button mat-raised-button>
+        <a [routerLink]="['/group', workGroup.id]">Przeglądaj</a>
+      </button>
       <button mat-mini-fab (click)="deleteWorkGroup(workGroup.id)">
         <mat-icon>delete</mat-icon>
       </button>
