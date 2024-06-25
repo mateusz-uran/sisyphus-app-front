@@ -1,0 +1,13 @@
+.work-form {
+  .url-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 1rem 0;
+
+    .remove-btn {
+      min-width: 40px;
+    }
+  }
+}

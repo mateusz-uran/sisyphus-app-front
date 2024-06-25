@@ -3,10 +3,9 @@ import {
   HttpEvent,
   HttpRequest,
   HttpResponse,
-  HttpErrorResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { TransformedWorkGroup, WorkGroup } from '../interfaces/work-group';
 

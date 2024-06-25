@@ -36,9 +36,9 @@ import { RouterModule } from '@angular/router';
       </div>
     </article>
     <div class="btn-wrapper">
-      <button mat-raised-button>
-        <a [routerLink]="['/group', workGroup.id]">Przeglądaj</a>
-      </button>
+      <a mat-raised-button [routerLink]="['/group', workGroup.id]"
+        >Przeglądaj</a
+      >
       <button mat-mini-fab (click)="deleteWorkGroup(workGroup.id)">
         <mat-icon>delete</mat-icon>
       </button>
@@ -64,9 +64,11 @@ export class WorkGroupComponent {
     this.workGroupService.deleteWorkGroup(workGroupId).subscribe({
       next: () => {
         console.log('Delete successful');
+        // TODO: handle information
       },
       error: (err: any) => {
         console.error('Error deleting work group', err);
+        // TODO: handle error information
       },
     });
   }

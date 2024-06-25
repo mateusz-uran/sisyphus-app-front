@@ -1,0 +1,33 @@
+.app {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: space-around;
+
+  .link-wrapper {
+    text-align: center;
+  }
+
+  .application-date {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: space-between;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .status-wrapper {
+    text-align: center;
+  }
+
+  .btns-wrapper {
+    display: flex;
+    align-items: center;
+
+    button {
+      margin: 0 0.5rem;
+    }
+  }
+}
