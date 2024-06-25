@@ -3,10 +3,10 @@ import { Component, inject, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  Validators,
   ReactiveFormsModule,
-  FormArray,
   FormControl,
+  ValidatorFn,
+  AbstractControl,
 } from '@angular/forms';
 import { map, switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -34,48 +34,42 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
     MatChipsModule,
   ],
 
-  template: `<form
-    [formGroup]="workUrlForm"
-    (ngSubmit)="submitForm()"
-    class="work-form"
-  >
-    <ng-container formArrayName="workUrlsArray">
-      <ng-container
-        *ngFor="let workUrl of workUrlsArray.controls; let i = index"
-      >
-        <div [formGroupName]="i" class="url-input-container">
-          <mat-form-field class="url-input">
-            <input
-              matInput
-              placeholder="Enter url #{{ i + 1 }}"
-              formControlName="workUrl"
-              class="mat-input"
-            />
-          </mat-form-field>
-
-          <div class="remove-btn">
-            <button
-              mat-mini-fab
-              type="button"
-              *ngIf="i > 0"
-              (click)="removeUrl(i)"
-            >
-              <mat-icon>remove</mat-icon>
+  template: `
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="urls-form">
+      <mat-form-field class="field-wrapper">
+        <mat-label>Linki</mat-label>
+        <mat-chip-grid
+          #chipGrid
+          aria-label="Wpisz linki"
+          [formControl]="formControl"
+        >
+          @for (url of workUrls(); track url) {
+          <mat-chip-row (removed)="removeSingleUrl(url)" class="url">
+            {{ url }}
+            <button matChipRemove aria-label="'remove ' + keyword">
+              <mat-icon>cancel</mat-icon>
             </button>
-          </div>
-        </div>
-      </ng-container>
-    </ng-container>
-    <button mat-mini-fab type="button" (click)="addUrl()">
-      <mat-icon>add</mat-icon>
-    </button>
-    <button type="submit" mat-raised-button [disabled]="!workUrlForm.valid">
-      Dodaj
-    </button>
-    <button type="button" mat-raised-button (click)="workUrlForm.reset()">
-      Wyczyść
-    </button>
-  </form> `,
+          </mat-chip-row>
+          }
+        </mat-chip-grid>
+        <input
+          placeholder="Nowy link..."
+          [matChipInputFor]="chipGrid"
+          (matChipInputTokenEnd)="addSingleUrl($event)"
+        />
+      </mat-form-field>
+
+      <div *ngIf="errorMessage() !== null" class="error-message">
+        {{ errorMessage() }}
+      </div>
+
+      <div class="btn-wrapper">
+        <button type="submit" mat-raised-button [disabled]="formGroup.invalid">
+          Zapisz
+        </button>
+      </div>
+    </form>
+  `,
 
   styleUrl: './work-app-form.component.scss',
 })
@@ -86,38 +80,49 @@ export class WorkAppFormComponent {
     WorkApplicationsService
   );
 
-  workUrlForm: FormGroup;
+  workUrls = signal<string[]>([]);
+  errorMessage = signal<string | null>(null);
+  formControl = new FormControl([], [this.nonEmptyArrayValidator()]);
+
+  formGroup: FormGroup;
 
   constructor(private fb: FormBuilder, private activatedRoute: ActivatedRoute) {
-    this.workUrlForm = this.fb.group({
-      workUrlsArray: this.fb.array([
-        this.fb.group({
-          workUrl: ['', [Validators.required]],
-        }),
-      ]),
+    this.formGroup = this.fb.group({
+      workUrls: this.formControl,
     });
   }
 
-  get workUrlsArray() {
-    return this.workUrlForm.get('workUrlsArray') as FormArray;
-  }
+  removeSingleUrl(url: string) {
+    this.workUrls.update((workUrls) => {
+      const index = workUrls.indexOf(url);
+      if (index < 0) {
+        return workUrls;
+      }
 
-  addUrl() {
-    const workUrl = this.fb.group({
-      workUrl: ['', [Validators.required]],
+      workUrls.splice(index, 1);
+      return [...workUrls];
     });
-    this.workUrlsArray.push(workUrl);
   }
 
-  removeUrl(index: number) {
-    this.workUrlsArray.removeAt(index);
+  addSingleUrl(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    const currentUrls = this.workUrls();
+
+    if (value && !currentUrls.includes(value)) {
+      this.workUrls.set([...currentUrls, value]);
+      this.errorMessage.set(null);
+    } else {
+      this.errorMessage.set('Ten link już został dodany');
+    }
+
+    event.chipInput.clear();
   }
 
-  public submitForm() {
-    const formValues = this.workUrlForm.getRawValue();
-    const data: WorkApplicationDTO[] = formValues.workUrlsArray.map(
-      (urlGroup: { workUrl: string }) => ({
-        workUrl: urlGroup.workUrl,
+  onSubmit() {
+    const dto: WorkApplicationDTO[] = this.formGroup.value.workUrls.map(
+      (url: string) => ({
+        workUrl: url,
       })
     );
 
@@ -126,7 +131,7 @@ export class WorkAppFormComponent {
         map((params) => params['id']),
         switchMap((workGroupId: string) =>
           this.workApplicationService
-            .saveNewWorkApplication(data, workGroupId)
+            .saveNewWorkApplication(dto, workGroupId)
             .pipe(
               switchMap(() =>
                 this.workApplicationService.getWorkApplications(workGroupId)
@@ -136,6 +141,14 @@ export class WorkAppFormComponent {
       )
       .subscribe((appList: WorkApplication[]) => {
         this.updateWorkAppList.emit(appList);
+        this.workUrls.set([]);
       });
+  }
+
+  nonEmptyArrayValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isEmpty = control.value.length === 0;
+      return isEmpty ? { emptyArray: { value: control.value } } : null;
+    };
   }
 }

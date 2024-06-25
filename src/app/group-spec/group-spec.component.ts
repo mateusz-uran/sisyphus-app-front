@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
   template: ` <app-work-app-form
       (updateWorkAppList)="handleUpdateWorkAppList($event)"
     ></app-work-app-form>
+    <mat-divider></mat-divider>
     <ng-container *ngFor="let app of workApplications">
       <div class="app">
         <div class="link-wrapper">
