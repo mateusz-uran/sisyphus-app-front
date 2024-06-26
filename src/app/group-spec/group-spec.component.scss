@@ -1,10 +1,27 @@
+@import "../../variables.scss";
+
 .app {
   margin: 1rem 0;
   display: flex;
   justify-content: space-around;
 
+  .h-font-small {
+    font-size: $font-micro;
+  }
+
   .link-wrapper {
     text-align: center;
+
+    p {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    p,
+    a {
+      width: 100px;
+    }
   }
 
   .application-date {

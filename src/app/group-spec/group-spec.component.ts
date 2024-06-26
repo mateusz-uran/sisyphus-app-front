@@ -30,15 +30,15 @@ import { MatIconModule } from '@angular/material/icon';
     <ng-container *ngFor="let app of workApplications">
       <div class="app">
         <div class="link-wrapper">
-          <p>{{ app.workUrl }}</p>
-          <a mat-stroked-button [href]="app.workUrl">link</a>
+          <p class="h-font-small">{{ app.workUrl }}</p>
+          <a mat-stroked-button [href]="app.workUrl">Otwórz</a>
         </div>
         <div class="application-date">
-          <p>Data aplikowania</p>
+          <p class="h-font-small">Data aplikowania</p>
           <p>{{ app.appliedDate }}</p>
         </div>
         <div class="status-wrapper">
-          <p>Status</p>
+          <p class="h-font-small">Status</p>
           <mat-chip-listbox class="mat-mdc-chip-set">
             <mat-chip-option
               *ngFor="let status of workStatus"
@@ -57,7 +57,6 @@ import { MatIconModule } from '@angular/material/icon';
           >
             Zapisz
           </button>
-          <button mat-button>Edytuj</button>
           <button mat-mini-fab (click)="deleteWork(app.id)">
             <mat-icon>delete</mat-icon>
           </button>
