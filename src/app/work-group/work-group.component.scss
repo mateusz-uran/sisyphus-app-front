@@ -2,59 +2,102 @@
 
 section {
   display: flex;
-  padding: 1rem 1.5rem;
+  justify-content: center;
 
-  .link-wrapper {
+  .content-wrapper {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 20%;
+    width: 100%;
+    padding: 1rem 1.5rem;
 
-    img {
-      max-height: 50px;
-    }
-
-    button {
-      margin-top: 1rem;
-    }
-  }
-
-  article {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0 1rem;
-    width: 60%;
-
-    p {
-      margin: 0;
-    }
-
-    .group-content {
-      height: 100%;
+    .link-wrapper {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      padding: 1rem;
-      justify-content: space-around;
+      width: 20%;
 
-      p:first-child {
-        font-weight: 600;
-        font-size: $font-small;
+      img {
+        max-height: 50px;
+      }
+
+      button {
+        margin-top: 1rem;
+      }
+    }
+
+    article {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 1rem;
+      width: 60%;
+
+      p {
+        margin: 0;
+      }
+
+      .group-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+        justify-content: space-around;
+
+        p:first-child {
+          font-weight: 600;
+          font-size: $font-small;
+        }
+      }
+    }
+
+    .btn-wrapper {
+      width: 20%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      button,
+      mat-icon {
+        margin: 0 0.5rem;
       }
     }
   }
+}
 
-  .btn-wrapper {
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+@media (max-width: 1040px) {
+  section {
+    .content-wrapper {
+      flex-direction: column;
+      align-items: center;
 
-    button,
-    mat-icon {
-      margin: 0 0.5rem;
+      .link-wrapper,
+      .btn-wrapper {
+        width: 100%; /* Ensure full width for the wrappers */
+        margin: 20px 0;
+      }
+
+      article {
+        width: 100%; /* Ensure full width for the article */
+        display: flex;
+        white-space: nowrap;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 15px 0;
+
+        .group-content {
+          padding: 0;
+          padding: 15px;
+          width: auto;
+          height: auto;
+        }
+      }
+
+      .btn-wrapper {
+        a {
+          min-width: 100px;
+        }
+      }
     }
   }
 }

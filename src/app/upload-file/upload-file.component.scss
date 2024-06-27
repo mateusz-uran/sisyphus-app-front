@@ -6,8 +6,8 @@
 }
 
 .container {
-  width: 450px;
-  padding: 2rem;
+  width: 350px;
+  padding: 1rem;
   text-align: center;
   border: dashed 2px $bg-gray;
   background: $bg-light;
@@ -20,7 +20,20 @@
   }
 
   .input-body {
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+    p,
+    button {
+      font-size: $font-micro;
+      margin: 5px 0;
+    }
+
+    .small {
+      font-style: italic;
+    }
   }
 
   .panel-body {
@@ -39,6 +52,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: left;
+      font-size: $font-micro;
     }
   }
 }

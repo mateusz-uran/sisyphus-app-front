@@ -1,5 +1,12 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+  afterNextRender,
+  inject,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
@@ -28,40 +35,46 @@ import { MatIconModule } from '@angular/material/icon';
     ></app-work-app-form>
     <mat-divider></mat-divider>
     <ng-container *ngFor="let app of workApplications">
-      <div class="app">
-        <div class="link-wrapper">
-          <p class="h-font-small">{{ app.workUrl }}</p>
-          <a mat-stroked-button [href]="app.workUrl">Otwórz</a>
-        </div>
-        <div class="application-date">
-          <p class="h-font-small">Data aplikowania</p>
-          <p>{{ app.appliedDate }}</p>
-        </div>
-        <div class="status-wrapper">
-          <p class="h-font-small">Status</p>
-          <mat-chip-listbox class="mat-mdc-chip-set">
-            <mat-chip-option
-              *ngFor="let status of workStatus"
-              [selected]="status === app.status"
-              (click)="changeStatusValue(status, app.status, app.id)"
+      <section>
+        <div class="app content">
+          <div class="link-wrapper">
+            <p class="h-font-small">{{ app.workUrl }}</p>
+            <a mat-stroked-button [href]="app.workUrl">Otwórz</a>
+          </div>
+          <div class="application-date">
+            <p class="h-font-small">Data aplikowania</p>
+            <p>{{ app.appliedDate }}</p>
+          </div>
+          <div class="status-wrapper">
+            <p class="h-font-small">Status</p>
+            <mat-chip-listbox
+              [ngClass]="
+                isScreenSmall ? 'mat-mdc-chip-set-stacked' : 'mat-mdc-chip-set'
+              "
             >
-              {{ status }}
-            </mat-chip-option>
-          </mat-chip-listbox>
+              <mat-chip-option
+                *ngFor="let status of workStatus"
+                [selected]="status === app.status"
+                (click)="changeStatusValue(status, app.status, app.id)"
+              >
+                {{ status }}
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+          <div class="btns-wrapper">
+            <button
+              mat-flat-button
+              [disabled]="selectedAppId !== app.id || !allowSaveButton"
+              (click)="updateWorkStatus(selectedAppId, selectedNewStatus)"
+            >
+              Zapisz
+            </button>
+            <button mat-mini-fab (click)="deleteWork(app.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </div>
-        <div class="btns-wrapper">
-          <button
-            mat-flat-button
-            [disabled]="selectedAppId !== app.id || !allowSaveButton"
-            (click)="updateWorkStatus(selectedAppId, selectedNewStatus)"
-          >
-            Zapisz
-          </button>
-          <button mat-mini-fab (click)="deleteWork(app.id)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </div>
+      </section>
       <mat-divider></mat-divider>
     </ng-container>`,
   styleUrl: './group-spec.component.scss',
@@ -79,6 +92,13 @@ export class GroupSpecComponent {
   selectedAppId: string = '';
   allowSaveButton: boolean = false;
   selectedNewStatus: string = '';
+  isScreenSmall: boolean = false;
+
+  constructor() {
+    afterNextRender(() => {
+      this.checkScreenWidth();
+    });
+  }
 
   ngOnInit(): void {
     this.activatedRoute.params
@@ -89,6 +109,15 @@ export class GroupSpecComponent {
       .subscribe((appList: WorkApplication[]) => {
         this.workApplications = appList;
       });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event | undefined) {
+    this.checkScreenWidth();
+  }
+
+  checkScreenWidth() {
+    this.isScreenSmall = window.innerWidth < 820;
   }
 
   changeStatusValue(newStatus: string, oldStatus: string, appId: string) {

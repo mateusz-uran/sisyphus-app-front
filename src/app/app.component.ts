@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { WorkGroupComponent } from './work-group/work-group.component';
 import { UploadFileComponent } from './upload-file/upload-file.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,14 +28,6 @@ import { MatDividerModule } from '@angular/material/divider';
         <p>Syzyf</p>
         <img src="./sisyphus.svg" alt="" />
       </div>
-      <div class="add-btn">
-        <button
-          mat-stroked-button
-          (click)="toggleUploadFile(showUploadFileForm)"
-        >
-          Dodaj grupe
-        </button>
-      </div>
     </header>
     <div class="upload-wrapper" *ngIf="showUploadFileForm">
       <app-upload-file></app-upload-file>
@@ -42,7 +39,11 @@ import { MatDividerModule } from '@angular/material/divider';
 export class AppComponent {
   showUploadFileForm: boolean = false;
 
-  toggleUploadFile(state: boolean) {
-    this.showUploadFileForm = !state;
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.showUploadFileForm = this.router.url === '/';
+      }
+    });
   }
 }

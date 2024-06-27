@@ -41,8 +41,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         style="display: none;"
         #input
       />
-      <p>Przeciągnij plik albo wybierz z urządzenia.</p>
+      <p>Utwórz grupę dodając plik PDF.</p>
       <button mat-raised-button (click)="openFileSelector()">Wybierz</button>
+      <p class="small">Wybierz lub przeciągnij</p>
     </div>
 
     <mat-expansion-panel hideToggle disabled expanded="{{ !!currentFile }}">
