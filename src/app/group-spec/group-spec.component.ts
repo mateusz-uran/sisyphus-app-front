@@ -1,17 +1,16 @@
 import {
   Component,
   HostListener,
-  Inject,
-  PLATFORM_ID,
   afterNextRender,
   inject,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { WorkApplicationsService } from '../services/work-applications.service';
 import { WorkApplication } from '../interfaces/work-application';
+import { WorkAppItemComponent } from '../work-app-item/work-app-item.component';
 import { WorkAppFormComponent } from '../work-app-form/work-app-form.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
@@ -25,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     ReactiveFormsModule,
     WorkAppFormComponent,
+    WorkAppItemComponent,
     MatChipsModule,
     MatDividerModule,
     MatButtonModule,
@@ -35,46 +35,14 @@ import { MatIconModule } from '@angular/material/icon';
     ></app-work-app-form>
     <mat-divider></mat-divider>
     <ng-container *ngFor="let app of workApplications">
-      <section>
-        <div class="app content">
-          <div class="link-wrapper">
-            <p class="h-font-small">{{ app.workUrl }}</p>
-            <a mat-stroked-button [href]="app.workUrl">Otwórz</a>
-          </div>
-          <div class="application-date">
-            <p class="h-font-small">Data aplikowania</p>
-            <p>{{ app.appliedDate }}</p>
-          </div>
-          <div class="status-wrapper">
-            <p class="h-font-small">Status</p>
-            <mat-chip-listbox
-              [ngClass]="
-                isScreenSmall ? 'mat-mdc-chip-set-stacked' : 'mat-mdc-chip-set'
-              "
-            >
-              <mat-chip-option
-                *ngFor="let status of workStatus"
-                [selected]="status === app.status"
-                (click)="changeStatusValue(status, app.status, app.id)"
-              >
-                {{ status }}
-              </mat-chip-option>
-            </mat-chip-listbox>
-          </div>
-          <div class="btns-wrapper">
-            <button
-              mat-flat-button
-              [disabled]="selectedAppId !== app.id || !allowSaveButton"
-              (click)="updateWorkStatus(selectedAppId, selectedNewStatus)"
-            >
-              Zapisz
-            </button>
-            <button mat-mini-fab (click)="deleteWork(app.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div>
-      </section>
+      <app-work-app-item
+        [app]="app"
+        [workStatus]="workStatus"
+        [isScreenSmall]="isScreenSmall"
+        (updateStatus)="updateWorkStatus($event.id, $event.status)"
+        (delete)="deleteWork($event)"
+      >
+      </app-work-app-item>
       <mat-divider></mat-divider>
     </ng-container>`,
   styleUrl: './group-spec.component.scss',
@@ -88,10 +56,7 @@ export class GroupSpecComponent {
   workGroupId$ = this.activatedRoute.params.pipe(map((p) => p['workGroupId']));
 
   workApplications: WorkApplication[] = [];
-  workStatus: string[] = ['IN_PROGRESS', 'SEND', 'DENIED'];
-  selectedAppId: string = '';
-  allowSaveButton: boolean = false;
-  selectedNewStatus: string = '';
+  workStatus: string[] = ['IN_PROGRESS', 'SEND', 'DENIED', 'HIRED'];
   isScreenSmall: boolean = false;
 
   constructor() {
@@ -120,18 +85,6 @@ export class GroupSpecComponent {
     this.isScreenSmall = window.innerWidth < 820;
   }
 
-  changeStatusValue(newStatus: string, oldStatus: string, appId: string) {
-    let primaryStatus: string = oldStatus;
-
-    if (newStatus !== oldStatus) {
-      this.allowSaveButton = true;
-      this.selectedNewStatus = newStatus;
-    } else if (newStatus === primaryStatus) {
-      this.allowSaveButton = false;
-    }
-    this.selectedAppId = appId;
-  }
-
   updateWorkStatus(appId: string, status: string) {
     this.workApplicationService
       .updateWorkApplicationStatus(appId, status)
@@ -146,10 +99,9 @@ export class GroupSpecComponent {
           this.workApplications.push(newWorkApp);
         }
 
-        this.allowSaveButton = false;
-
         if (newWorkApp.status === 'HIRED') {
-          // TODO: run logic for HIRED animation
+          // TODO: run celebrating animation from here
+          console.log('HIRED KURWA TEN');
         }
       });
   }
