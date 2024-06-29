@@ -16,6 +16,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { CelebratingModalComponent } from '../celebrating-modal/celebrating-modal.component';
+import { ConfettiService } from '../services/confetti.service';
 
 @Component({
   selector: 'app-group-spec',
@@ -51,8 +54,10 @@ export class GroupSpecComponent {
   workApplicationService: WorkApplicationsService = inject(
     WorkApplicationsService
   );
-
+  dialog = inject(MatDialog);
   private activatedRoute = inject(ActivatedRoute);
+  private confettiService = inject(ConfettiService);
+
   workGroupId$ = this.activatedRoute.params.pipe(map((p) => p['workGroupId']));
 
   workApplications: WorkApplication[] = [];
@@ -74,6 +79,14 @@ export class GroupSpecComponent {
       .subscribe((appList: WorkApplication[]) => {
         this.workApplications = appList;
       });
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(CelebratingModalComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.confettiService.stopCelebration();
+    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -100,8 +113,8 @@ export class GroupSpecComponent {
         }
 
         if (newWorkApp.status === 'HIRED') {
-          // TODO: run celebrating animation from here
-          console.log('HIRED KURWA TEN');
+          this.openDialog();
+          this.confettiService.celebrate();
         }
       });
   }

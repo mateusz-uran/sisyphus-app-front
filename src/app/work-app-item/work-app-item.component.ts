@@ -1,17 +1,9 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  input,
-  output,
-} from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { WorkApplication } from '../interfaces/work-application';
-
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-work-app-item',

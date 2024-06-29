@@ -1,11 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { WorkGroupComponent } from './work-group/work-group.component';
 import { UploadFileComponent } from './upload-file/upload-file.component';
 import { MatButtonModule } from '@angular/material/button';
