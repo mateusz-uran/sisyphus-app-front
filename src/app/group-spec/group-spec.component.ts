@@ -36,7 +36,6 @@ import { ConfettiService } from '../services/confetti.service';
   template: ` <app-work-app-form
       (updateWorkAppList)="handleUpdateWorkAppList($event)"
     ></app-work-app-form>
-    <mat-divider></mat-divider>
     <ng-container *ngFor="let app of workApplications">
       <app-work-app-item
         [app]="app"
@@ -46,7 +45,6 @@ import { ConfettiService } from '../services/confetti.service';
         (delete)="deleteWork($event)"
       >
       </app-work-app-item>
-      <mat-divider></mat-divider>
     </ng-container>`,
   styleUrl: './group-spec.component.scss',
 })

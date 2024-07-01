@@ -1,4 +1,8 @@
-@import "../../variables.scss";
+@import "../../styles/variables.scss";
+@import "../../styles/mixin.scss";
+
+$head_p: getThemeColor(80, neutral);
+$main_p: getThemeColor(95, neutral);
 
 section {
   display: flex;
@@ -9,6 +13,9 @@ section {
     display: flex;
     justify-content: space-around;
     width: 100%;
+    background-color: getThemeColor(40, secondary);
+    padding: 15px;
+    border-radius: 5px;
 
     .h-font-small {
       font-size: $font-micro;
@@ -21,6 +28,7 @@ section {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: $head_p;
       }
 
       p,
@@ -37,11 +45,20 @@ section {
 
       p {
         margin: 0;
+        color: $main_p;
+
+        &:first-child {
+          color: $head_p;
+        }
       }
     }
 
     .status-wrapper {
       text-align: center;
+
+      p {
+        color: $head_p;
+      }
     }
 
     .btns-wrapper {

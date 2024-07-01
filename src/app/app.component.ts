@@ -24,6 +24,7 @@ import { MatDividerModule } from '@angular/material/divider';
         <img src="./sisyphus.svg" alt="" />
       </div>
     </header>
+    <mat-divider></mat-divider>
     <div class="upload-wrapper" *ngIf="showUploadFileForm">
       <app-upload-file></app-upload-file>
     </div>
@@ -33,7 +34,7 @@ import { MatDividerModule } from '@angular/material/divider';
 })
 export class AppComponent {
   showUploadFileForm: boolean = false;
-
+  toggled: boolean = true;
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {

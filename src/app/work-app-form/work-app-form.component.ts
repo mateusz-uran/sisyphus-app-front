@@ -35,40 +35,46 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
   ],
 
   template: `
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="urls-form">
-      <mat-form-field class="field-wrapper">
-        <mat-label>Linki</mat-label>
-        <mat-chip-grid
-          #chipGrid
-          aria-label="Wpisz linki"
-          [formControl]="formControl"
-        >
-          @for (url of workUrls(); track url) {
-          <mat-chip-row (removed)="removeSingleUrl(url)" class="url">
-            {{ url }}
-            <button matChipRemove aria-label="'remove ' + keyword">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
-          }
-        </mat-chip-grid>
-        <input
-          placeholder="Nowy link..."
-          [matChipInputFor]="chipGrid"
-          (matChipInputTokenEnd)="addSingleUrl($event)"
-        />
-      </mat-form-field>
+    <div class="form-wrapper">
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="urls-form">
+        <mat-form-field class="field-wrapper">
+          <mat-label>Linki</mat-label>
+          <mat-chip-grid
+            #chipGrid
+            aria-label="Wpisz linki"
+            [formControl]="formControl"
+          >
+            @for (url of workUrls(); track url) {
+            <mat-chip-row (removed)="removeSingleUrl(url)" class="url">
+              {{ url }}
+              <button matChipRemove aria-label="'remove ' + keyword">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            }
+          </mat-chip-grid>
+          <input
+            placeholder="Nowy link..."
+            [matChipInputFor]="chipGrid"
+            (matChipInputTokenEnd)="addSingleUrl($event)"
+          />
+        </mat-form-field>
 
-      <div *ngIf="errorMessage() !== null" class="error-message">
-        {{ errorMessage() }}
-      </div>
+        <div *ngIf="errorMessage() !== null" class="error-message">
+          {{ errorMessage() }}
+        </div>
 
-      <div class="btn-wrapper">
-        <button type="submit" mat-raised-button [disabled]="formGroup.invalid">
-          Zapisz
-        </button>
-      </div>
-    </form>
+        <div class="btn-wrapper">
+          <button
+            type="submit"
+            mat-raised-button
+            [disabled]="formGroup.invalid"
+          >
+            Zapisz
+          </button>
+        </div>
+      </form>
+    </div>
   `,
 
   styleUrl: './work-app-form.component.scss',
