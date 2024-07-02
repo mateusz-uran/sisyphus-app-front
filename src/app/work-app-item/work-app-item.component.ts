@@ -4,16 +4,29 @@ import { WorkApplication } from '../interfaces/work-application';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-work-app-item',
   standalone: true,
-  imports: [CommonModule, MatChipsModule, MatIconModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatChipsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+  ],
   template: `
     <section *ngIf="app() as app">
       <div class="app content">
         <div class="link-wrapper">
-          <p class="h-font-small">{{ app.workUrl }}</p>
+          <p
+            class="h-font-small"
+            [matTooltip]="app.workUrl"
+            matTooltipPosition="above"
+          >
+            {{ app.workUrl }}
+          </p>
           <a mat-stroked-button [href]="app.workUrl">Otwórz</a>
         </div>
         <div class="application-date">

@@ -11,7 +11,13 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule],
   template: `<section>
-    <div class="content-wrapper content">
+    <div
+      [ngClass]="[
+        'content-wrapper',
+        'content',
+        workGroup.isHired ? 'hired' : ''
+      ]"
+    >
       <div class="link-wrapper">
         <img src="./vector_cv_resized.png" alt="cv_template" />
         <button mat-flat-button (click)="openPdfInNewTab(workGroup.cvData)">
@@ -43,6 +49,9 @@ import { RouterModule } from '@angular/router';
         <button mat-mini-fab (click)="deleteWorkGroup(workGroup.id)">
           <mat-icon>delete</mat-icon>
         </button>
+      </div>
+      <div *ngIf="workGroup.isHired" class="celeb">
+        <img src="/cup-6614_256.gif" alt="hired gif" />
       </div>
     </div>
   </section>`,

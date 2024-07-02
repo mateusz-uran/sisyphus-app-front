@@ -6,6 +6,7 @@ export interface WorkGroup {
   applied: number;
   denied: number;
   inProgress: number;
+  isHired: boolean;
 }
 
 export interface TransformedWorkGroup {
@@ -16,4 +17,5 @@ export interface TransformedWorkGroup {
   applied: number;
   denied: number;
   inProgress: number;
+  isHired: boolean;
 }

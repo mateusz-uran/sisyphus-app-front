@@ -4,7 +4,6 @@
 section {
   display: flex;
   justify-content: center;
-  // background-color: getThemeColor(70, neutral);
 
   .content-wrapper {
     background-color: getThemeColor(30, secondary);
@@ -13,6 +12,11 @@ section {
     padding: 1rem 1.5rem;
     border-radius: 5px;
     margin: 20px 0;
+    position: relative;
+
+    &.hired {
+      background-color: getThemeColor(50, secondary);
+    }
 
     .link-wrapper {
       display: flex;
@@ -23,7 +27,6 @@ section {
 
       img {
         max-height: 50px;
-        border-radius: 50%;
       }
 
       button {
@@ -69,6 +72,17 @@ section {
       mat-icon {
         margin: 0 0.5rem;
       }
+    }
+  }
+
+  .celeb {
+    position: absolute;
+    left: -20px;
+    top: -20px;
+    height: 50px;
+
+    img {
+      height: 50px;
     }
   }
 }
